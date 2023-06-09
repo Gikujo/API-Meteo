@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Météo</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz"
+        crossorigin="anonymous"></script>
+    <link rel="apple-touch-icon" sizes="180x180" href="ressources/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="ressources/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="ressources/favicon-16x16.png">
+    <link rel="manifest" href="/site.webmanifest">
+</head>
+
+<body>
+    <div class="container">
+
+        <div class="row justify-content-center">
+
+            <div class="col-md-8">
+                <!-- Titre -->
+                <h1 class="text-center mt-5">Météo</h1>
+
+                <!-- Ville / Temperature -->
+                <div class="text-center">
+                    <span id="ville">paris</span>
+
+                    <div class="category" id="temperature">
+                        <span id="temperature_label">
+                            xx.x
+                        </span> °C
+                    </div>
+                    <div class="category" id="feel_like">
+                        Ressenti :
+                        <span id="feel_like_label">
+                            xx.x
+                        </span> °C
+                    </div>
+                    <div class="category" id="minmax_temp">
+                        Tmin :
+                        <span id="tmin_label">
+                            xx.x
+                        </span> °C<br>
+                        Tmax :
+                        <span id="tmax_label">
+                            xx.x
+                        </span> °C
+                    </div>
+
+                    <div class="category" id="description">
+                        Temps : <span id="description_label">
+                            xxxxx
+                        </span>
+                    </div>
+                    <div class="category" id="wind">
+                        Vent :
+                        <span id="wind_speed_label">
+                            xx.x
+                        </span> km/h<br>
+                        <span id="wind_direction_label">
+                            xxx
+                        </span>°
+                    </div>
+                    <div class="category" id="sun_data">
+                        Lever de Soleil :
+                        <span id="sunrise_label">
+                            xx
+                        </span><br>
+                        Coucher de soleil :
+                        <span id="sunset_label">
+                            xxx
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="row justify-content-center">
+            <div class="col-md-8 text-center">
+                <!-- Changer de ville -->
+                <div id="changer"
+                    class="mt-2 text-center p-3 text-white font-weight-bold text-uppercase d-inline-block">
+                    Changer de ville
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+    <script src="script.js"></script>
+</body>
+
+</html>
