@@ -16,11 +16,29 @@ let champSoleilCoucher = document.querySelector('#sunset_label');
 // ----- On rentre la clé secrète -----
 const apiKey = 'd07bab99a7e3721155f261b16d42ec45';
 
-// ----- Affichage de la ville par déafut -----
-let villeChoisie = 'Aix en Provence';
-mettreAjour(villeChoisie);
+// ----- Option de géolocalisation -----
+// Cas 1 : La géolocalisation est désactivée.
+// ------- Dans ce cas, on va afficher Paris par défaut, et on peut changer à souhait.
+// Cas 2 : La géolocalisation est activée.
+// -------- Dans ce cas, on va afficher par défaut la localisation, et on peut changer à souhait.
+// -------- Si on veut retrouver la localisation, il faut réactualiser la page.
+let villeChoisie = null;
 
-// ---------- Écouteur d'évènements ----------
+if ("geolocation" in navigator && villeChoisie === null) {
+    navigator.geolocation.getCurrentPosition((position) => {
+
+        let lat = position.coords.latitude;
+        let long = position.coords.longitude;
+        villeChoisie = null;
+        mettreAjour(villeChoisie, lat, long);
+    },
+        // Si la localisation n'est pas activée, c'est la fonction "erreur" qui sera activée.
+        erreur,
+        // On paramètre les options dans un objet littéral (en bas du code)
+        options);
+}
+
+// ---------- Écouteur d'évènements en cas de clic sur le bouton ----------
 button.addEventListener('click', () => {
     villeChoisie = prompt('Veuillez entrer un nom de ville');
     mettreAjour(villeChoisie);
@@ -28,28 +46,30 @@ button.addEventListener('click', () => {
 
 // ------------------------------------------------- FONCTION PRINCIPALE ------------------------------------------------
 
-function mettreAjour(ville) {
+function mettreAjour(ville, lat, long) {
 
     let url;
+    // Si on fait une recherche par nom de ville, on va utiliser l'URL avec "q" en paramètre.
+    if (ville != null) {
+        // Si le nom de ville contient des espaces, on les remplaces par des tirets
+        if (ville.includes(' ')) {
+            let motsDuchampVille = ville.split(' ');
 
-    // Si le nom de ville contient des espaces, on les remplaces par des tirets
-    if (ville.includes(' ')) {
-        let motsDuchampVille = ville.split(' ');
-        console.log(motsDuchampVille);
+            let villeAvecTirets = motsDuchampVille[0];
 
-        let villeAvecTirets = motsDuchampVille[0];
+            for (let index = 1; index < motsDuchampVille.length; index++) {
+                villeAvecTirets += `-${motsDuchampVille[index]}`;
+            }
 
-        for (let index = 1; index < motsDuchampVille.length; index++) {
-            villeAvecTirets += `-${motsDuchampVille[index]}`;
+            url = `https://api.openweathermap.org/data/2.5/weather?q=${villeAvecTirets}&appid=${apiKey}&units=metric&lang=fr`;
         }
-
-        console.log(villeAvecTirets);
-
-        url = `https://api.openweathermap.org/data/2.5/weather?q=${villeAvecTirets}&appid=${apiKey}&units=metric&lang=fr`;
-    }
-    // Sinon, on rentre le nom de ville tel que
-    else {
-        url = `https://api.openweathermap.org/data/2.5/weather?q=${ville}&appid=${apiKey}&units=metric&lang=fr`;
+        // Sinon, on rentre le nom de ville tel quel
+        else {
+            url = `https://api.openweathermap.org/data/2.5/weather?q=${ville}&appid=${apiKey}&units=metric&lang=fr`;
+        }
+    } else {
+        // Sinon, c'est qu'on utilise lat et long, et dans ce cas, on va utiliser l'URL avec "lat" et "lon" en paramètres
+        url = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${long}&appid=${apiKey}&units=metric&lang=fr`;
     }
 
     // Créer la requête
@@ -64,6 +84,7 @@ function mettreAjour(ville) {
         if (requete.readyState === XMLHttpRequest.DONE) {
             if (requete.status === 200) {
                 let reponse = requete.response; // On stocke dans une variable le JSON
+                console.log(reponse);
 
                 // ----- On récupère les variables -----
                 let temperature = reponse.main.temp;
@@ -77,7 +98,7 @@ function mettreAjour(ville) {
                 let sunset = reponse.sys.sunset;
 
                 // ----- Rajouter les éléments dans le DOM -----
-                champVille.innerHTML = ville;
+                champVille.innerHTML = reponse.name;
                 champTemperature.innerHTML = temperature;
                 champRessenti.innerHTML = feelLike;
                 champTMin.innerHTML = tMin;
@@ -103,4 +124,17 @@ function convertir(timestamp) {
     timestamp = timestamp.toLocaleTimeString();
 
     return timestamp;
+}
+
+// ------------------------------ FONCTION D'APPEL DE LA MÉTÉO EN FONCTION DU NOM DE VILLE ----------------------------
+function erreur() {
+    villeChoisie = "Paris";
+    let lat = null;
+    let long = null;
+    mettreAjour(villeChoisie, lat, long);
+}
+
+// ----------------------------------------- OPTIONS POUR L'APPEL DE LA MÉTÉO ------------------------------------------
+var options = {
+    enableHighAccuracy: true
 }
